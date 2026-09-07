@@ -1,0 +1,96 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+.viewport {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+.stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1920px;
+  height: 1080px;
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+  overflow: hidden;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.layer--room,
+.layer--hero {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Герой чуть притушен, чтобы не выглядеть вырезанным из другой,
+   освещённой сцены. Свет от монитора всё равно оставляет его акцентом.     */
+.layer--hero {
+  filter: brightness(0.88) saturate(0.92);
+}
+
+/* Временное затемнение комнаты. На этапе 3 его заменит слой-фонарик,
+   поэтому в разметке он уже стоит на своём финальном месте —
+   выше артефактов, но ниже героя.                                          */
+.layer--tint {
+  background: rgba(8, 12, 30, 0.9);
+  pointer-events: none;
+}
+
+.layer--flashlight {
+  position: absolute;
+  left: -55%;
+  top: -55%;
+  width: 210%;
+  height: 210%;
+  background: radial-gradient(
+    circle 280px at center,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(8, 12, 30, 0.35) 45%,
+    rgba(8, 12, 30, 0.88) 70%,
+    rgba(8, 12, 30, 0.97) 100%
+  );
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* ---------- Верхняя панель ----------
+   Живёт ВНЕ сцены, в экранных пикселях. Если засунуть её внутрь .stage,
+   на маленьком экране кнопки уменьшатся вместе со сценой и станут
+   нечитаемыми.                                                             */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 16px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #cfd6e6;
+  font:
+    13px/1 system-ui,
+    sans-serif;
+}
