@@ -28,7 +28,7 @@ export function initArtifacts() {
       unlockReward(id);
       if (artifactsFound.size === 3) {
         showDialog({
-          text: 'Последний артефакт найден! Поздравляю, ты всё нашёл!',
+          text: 'Отлично, всё на месте! Без тебя бы ещё долго искал. Если хочешь продолжить знакомство — жми кнопку)',
           buttons: [{ label: 'OK', onClick: startFinale }],
         });
         playSfx('allFound');

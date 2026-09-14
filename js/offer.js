@@ -1,5 +1,8 @@
 const WEB3FORMS_KEY = '71640098-8e84-453a-8719-bd09d188a732';
 
+const DESIGN_W = 1100;
+const MODAL_PAD = 48;
+
 const MATRIX = {
   150: { office: 'sui', hybrid: 'sui', remote: 'sui' },
   200: { office: 'sui', hybrid: 'leb', remote: 'leb' },
@@ -58,6 +61,8 @@ export const initOffer = () => {
     modal.hidden = false;
     document.querySelector('.stage')?.classList.add('is-offer');
     updateSpritePreview(form);
+
+    requestAnimationFrame(fitOfferPanel);
   };
 
   const close = () => {
@@ -110,3 +115,19 @@ export const showFinaleCta = () => {
   const cta = document.querySelector('.finale-cta');
   if (cta) cta.hidden = false;
 };
+
+function fitOfferPanel() {
+  const modal = document.querySelector('.offer-modal');
+  const scaler = document.querySelector('.offer-modal__scaler');
+  if (!modal || !scaler || modal.hidden) return;
+  scaler.style.setProperty('--offer-s', '1'); // сброс для замера
+  const naturalH = scaler.offsetHeight;
+  const s = Math.min(
+    (innerWidth - MODAL_PAD) / DESIGN_W,
+    (innerHeight - MODAL_PAD) / naturalH,
+    1,
+  );
+  scaler.style.setProperty('--offer-s', String(s));
+}
+
+addEventListener('resize', fitOfferPanel, { passive: true });
