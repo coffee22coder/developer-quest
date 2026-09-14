@@ -1,5 +1,6 @@
 import { showDialog, hideDialog } from './dialog.js';
 import { startFinale } from './finale.js';
+import { playSfx } from './sound.js';
 
 const FOUND_TEXT = {
   cat: 'Нашёл! Это GitHub — репозитории на месте. Смотри панель сверху.',
@@ -30,7 +31,9 @@ export function initArtifacts() {
           text: 'Последний артефакт найден! Поздравляю, ты всё нашёл!',
           buttons: [{ label: 'OK', onClick: startFinale }],
         });
+        playSfx('allFound');
       } else {
+        playSfx(id);
         showDialog({
           text: FOUND_TEXT[id],
           buttons: [{ label: 'OK', onClick: hideDialog }],

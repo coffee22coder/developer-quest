@@ -52,3 +52,22 @@ export function initSound() {
 
   render();
 }
+
+const cache = {};
+
+const SFX = {
+  cat: { src: 'assets/sound/cat.mp3', volume: 0.6 },
+  cv: { src: 'assets/sound/cv.mp3', volume: 0.6 },
+  phone: { src: 'assets/sound/phone.mp3', volume: 0.6 },
+  allFound: { src: 'assets/sound/all.mp3', volume: 0.7 },
+};
+
+export const playSfx = (id) => {
+  if (!enabled || !SFX[id]) return;
+  if (!cache[id]) {
+    cache[id] = new Audio(SFX[id].src);
+    cache[id].volume = SFX[id].volume;
+  }
+  cache[id].currentTime = 0;
+  cache[id].play().catch((err) => console.warn('SFX error:', id, err));
+};
