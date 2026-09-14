@@ -1,3 +1,14 @@
+:root {
+  --neon: #78bedc;
+  --neon-muted: rgba(94, 231, 255, 0.22);
+  --neon-glow-sm: 0 0 5px rgba(56, 189, 248, 0.9);
+  --neon-glow-md: 0 0 6px rgba(56, 189, 248, 0.9);
+  --neon-glow-lg: 0 0 16px rgba(14, 165, 233, 0.7);
+  --neon-glow-xl: 0 0 28px rgba(125, 249, 255, 0.85);
+
+  --font-dialog: 'Shantell Sans', cursive;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -7,14 +18,18 @@ body {
   margin: 0;
   height: 100%;
   overflow: hidden;
-  background: #000;
 }
 
 .viewport {
   position: fixed;
   inset: 0;
   overflow: hidden;
-  background: #000;
+
+  background-color: rgb(7, 9, 26);
+  background-image:
+    linear-gradient(rgba(120, 190, 220, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 190, 220, 0.1) 1px, transparent 1px);
+  background-size: 30px 30px;
 }
 
 .stage {
@@ -43,8 +58,25 @@ body {
 
 /* Герой чуть притушен, чтобы не выглядеть вырезанным из другой,
    освещённой сцены. Свет от монитора всё равно оставляет его акцентом.     */
-.layer--hero {
+.hero-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
   filter: brightness(0.88) saturate(0.92);
+  pointer-events: none;
+}
+
+.hero-frame.is-active {
+  z-index: 1;
+  opacity: 1;
+}
+
+.hero-frame:not(.is-active) {
+  z-index: 0;
+  opacity: 0;
 }
 
 /* Временное затемнение комнаты. На этапе 3 его заменит слой-фонарик,
@@ -93,4 +125,835 @@ body {
   font:
     13px/1 system-ui,
     sans-serif;
+}
+
+.artifact {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.artifact-visual {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transition:
+    filter 0.35s ease,
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.artifact-hit {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.artifact-hit--cat {
+  left: 500px;
+  top: 800px;
+  width: 250px;
+  height: 150px;
+}
+.artifact-hit--cv {
+  left: 650px;
+  top: 360px;
+  width: 240px;
+  height: 170px;
+}
+.artifact-hit--phone {
+  left: 1450px;
+  top: 580px;
+  width: 100px;
+  height: 80px;
+}
+
+/* hover/active через :has() — без JS */
+.layer--artifacts:has(.artifact-hit--cat:hover) .artifact-visual--cat,
+.layer--artifacts:has(.artifact-hit--phone:hover) .artifact-visual--phone,
+.layer--artifacts:has(.artifact-hit--cv:hover) .artifact-visual--cv {
+  filter: drop-shadow(var(--neon-glow-sm)) brightness(1.05);
+}
+
+.layer--artifacts:has(.artifact-hit--cat:active) .artifact-visual--cat,
+.layer--artifacts:has(.artifact-hit--phone:active) .artifact-visual--phone,
+.layer--artifacts:has(.artifact-hit--cv:active) .artifact-visual--cv {
+  transform: scale(1.08);
+  filter: drop-shadow(var(--neon-glow-md)) drop-shadow(var(--neon-glow-lg))
+    drop-shadow(var(--neon-glow-xl)) brightness(1.15);
+}
+
+.artifact-visual.is-found {
+  opacity: 0;
+}
+
+.stage.is-finale .artifact-visual {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+.stage.is-finale .artifact-hit {
+  pointer-events: none;
+  cursor: default;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 82px; /* чуть выше — иконки крупнее */
+  padding: 0 20px;
+  background: rgba(6, 28, 58, 0.55);
+  border-bottom: 3px solid rgba(94, 231, 255, 0.35);
+  box-shadow:
+    inset 0 0 24px rgba(56, 189, 248, 0.08),
+    0 4px 20px rgba(14, 165, 233, 0.15);
+  backdrop-filter: blur(6px);
+  border-radius: 0 0 16px 16px;
+}
+
+.topbar__rewards {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.topbar-link {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: rgba(94, 231, 255, 0.22);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 18px;
+  transition:
+    color 0.35s,
+    filter 0.35s,
+    transform 0.2s;
+}
+
+.topbar-link svg {
+  width: 32px;
+  height: 32px;
+  fill: currentColor;
+}
+
+.topbar-link.is-locked {
+  pointer-events: none;
+  filter: brightness(0.85) saturate(0.4);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.55),
+    inset 0 -1px 0 rgba(94, 231, 255, 0.06);
+  /* ощущение «вдавлено в панель» */
+}
+
+.topbar-link.is-lit {
+  pointer-events: auto;
+  color: var(--neon);
+  filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.9))
+    drop-shadow(0 0 12px rgba(14, 165, 233, 0.7));
+  box-shadow:
+    0 0 16px rgba(56, 189, 248, 0.35),
+    inset 0 0 8px rgba(125, 249, 255, 0.15);
+  animation: neon-on 0.45s ease-out;
+}
+.topbar-link.is-lit:hover {
+  transform: scale(1.06);
+  color: #fff;
+}
+@keyframes neon-on {
+  0% {
+    opacity: 0.4;
+    filter: brightness(0.5);
+  }
+  40% {
+    opacity: 1;
+    filter: drop-shadow(0 0 20px #7df9ff);
+  }
+  100% {
+    /* финальное состояние как в .is-lit */
+  }
+}
+
+.topbar-link__hh {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font:
+    700 12px/1 system-ui,
+    sans-serif;
+  letter-spacing: -0.06em;
+  text-transform: lowercase;
+  color: currentColor; /* = fill у svg */
+  background: transparent;
+  border: 2px solid currentColor;
+  transition:
+    color 0.35s,
+    border-color 0.35s,
+    background 0.35s;
+}
+
+.topbar-link.is-lit .topbar-link__hh {
+  background: rgba(159, 246, 255, 0.15);
+}
+
+.topbar-link.is-lit:hover .topbar-link__hh {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.topbar-sound svg {
+  width: 32px;
+  height: 32px;
+}
+
+.topbar-sound {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--neon-muted);
+  cursor: pointer;
+  filter: brightness(0.85) saturate(0.4);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.55),
+    inset 0 -1px 0 rgba(94, 231, 255, 0.06);
+  transition:
+    color 0.35s,
+    filter 0.35s,
+    transform 0.2s;
+}
+.topbar-sound svg {
+  width: 32px;
+  height: 32px;
+  stroke: currentColor;
+  fill: none;
+}
+/* волны скрыты = звук выкл */
+.topbar-sound .topbar-sound__wave {
+  opacity: 0;
+}
+/* звук вкл */
+.topbar-sound[aria-pressed='true'] {
+  color: var(--neon);
+  filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.9))
+    drop-shadow(0 0 12px rgba(14, 165, 233, 0.7));
+  box-shadow:
+    0 0 16px rgba(56, 189, 248, 0.35),
+    inset 0 0 8px rgba(125, 249, 255, 0.15);
+}
+.topbar-sound[aria-pressed='true'] .topbar-sound__wave {
+  opacity: 1;
+}
+.topbar-sound[aria-pressed='true']:hover {
+  transform: scale(1.06);
+  color: #fff;
+}
+
+.dialog-panel {
+  position: absolute;
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  pointer-events: auto; /* клики по кнопкам и skip */
+  left: 55px;
+  top: 320px;
+  width: 500px;
+  height: 400px; /* чуть выше — иконки крупнее */
+  padding: 20px;
+  gap: 16px;
+  background: rgba(6, 28, 58, 0.55);
+  border: 3px solid rgba(94, 231, 255, 0.35);
+  box-shadow:
+    inset 0 0 24px rgba(56, 189, 248, 0.08),
+    0 4px 20px rgba(14, 165, 233, 0.15);
+  backdrop-filter: blur(6px);
+}
+
+.dialog-panel__text {
+  margin: 0;
+  flex: 1;
+  color: var(--neon);
+  font:
+    16px/1.5 system-ui,
+    sans-serif;
+  white-space: pre-wrap;
+}
+
+.dialog-panel[hidden] {
+  display: none !important;
+}
+
+.dialog-panel__text,
+.dialog-panel__btn {
+  font-family: var(--font-dialog);
+  font-size: 28px;
+  line-height: 1.35;
+}
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #000;
+  opacity: 1;
+  transition: opacity 3s ease;
+  pointer-events: auto;
+}
+.intro.is-fading {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.layer--flashlight {
+  transition: opacity 2s ease;
+}
+.layer--flashlight.is-off {
+  opacity: 0;
+}
+.stage.is-finale .layer--room {
+  filter: brightness(1.12) saturate(1.08);
+  transition: filter 2s ease;
+}
+.stage.is-finale .hero-frame.is-active {
+  filter: none; /* убрать brightness(0.88) */
+  transition: filter 2s ease;
+}
+
+.layer--menu {
+  position: absolute;
+  inset: 0;
+  z-index: 120;
+  pointer-events: none;
+}
+
+.menu-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.menu-layer[hidden] {
+  display: none;
+}
+
+.menu-hit {
+  position: absolute;
+  pointer-events: auto;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.menu-hit[hidden],
+.menu-hit.is-locked {
+  pointer-events: none;
+}
+
+.menu-hit--sound {
+  left: 1761px;
+  top: 91px;
+  width: 70px;
+  height: 74px;
+}
+
+.menu-hit[data-reward='github'] {
+  left: 302px;
+  top: 87px;
+  width: 81px;
+  height: 79px;
+}
+.menu-hit[data-reward='hh'] {
+  left: 448px;
+  top: 88px;
+  width: 83px;
+  height: 83px;
+}
+.menu-hit[data-reward='telegram'] {
+  left: 591px;
+  top: 86px;
+  width: 89px;
+  height: 88px;
+}
+
+.dialog-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dialog-panel__btn {
+  font-family: var(--font-dialog);
+  font-size: 26px;
+  line-height: 1.2;
+  padding: 6px 20px;
+  color: var(--neon);
+  background: rgba(6, 28, 58, 0.85);
+  border: 2px solid rgba(94, 231, 255, 0.45);
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    background 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.dialog-panel__btn:hover {
+  color: #fff;
+  border-color: var(--neon);
+  background: rgba(14, 60, 100, 0.9);
+  box-shadow:
+    0 0 12px rgba(56, 189, 248, 0.45),
+    inset 0 0 10px rgba(125, 249, 255, 0.12);
+}
+
+.dialog-panel__btn:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.dialog-panel__btn:focus-visible {
+  outline: 2px solid var(--neon);
+  outline-offset: 2px;
+}
+
+.finale-cta {
+  position: absolute;
+  left: 50%;
+  bottom: 80px;
+  transform: translateX(-50%);
+  z-index: 160;
+  pointer-events: auto;
+}
+
+.offer-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+}
+.offer-modal[hidden] {
+  display: none !important;
+}
+
+.offer-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.offer-modal__panel {
+  position: relative;
+  z-index: 1;
+  width: min(1100px, 70vw);
+  max-height: 80vh;
+  overflow: auto;
+  background: #0b1a2e;
+  color: #e8f4ff;
+  padding: 24px;
+  border: 2px solid rgba(94, 231, 255, 0.4);
+}
+
+.offer-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.stage.is-offer {
+  filter: brightness(0.45);
+}
+
+.finale-cta[hidden] {
+  display: none !important;
+}
+
+.offer-sprite-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1280 / 1440;
+}
+
+.offer-sprite {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.offer-sprite.is-active {
+  opacity: 1;
+}
+.offer-sprite__caption {
+  margin: 12px 0 0;
+  text-align: center;
+  font-family: var(--font-dialog);
+  font-size: 24px;
+  color: var(--neon);
+}
+
+/* ---------- Finale CTA + Offer modal ---------- */
+
+.finale-cta {
+  position: absolute;
+  left: 50%;
+  bottom: 80px;
+  transform: translateX(-50%);
+  z-index: 160;
+  pointer-events: auto;
+  font-family: var(--font-dialog);
+  font-size: 26px;
+  padding: 10px 28px;
+  color: var(--neon);
+  background: rgba(6, 28, 58, 0.85);
+  border: 2px solid rgba(94, 231, 255, 0.5);
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    background 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.finale-cta:hover {
+  color: #fff;
+  border-color: var(--neon);
+  box-shadow:
+    0 0 16px rgba(56, 189, 248, 0.4),
+    inset 0 0 12px rgba(125, 249, 255, 0.1);
+}
+
+.finale-cta[hidden] {
+  display: none !important;
+}
+
+.offer-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.offer-modal[hidden] {
+  display: none !important;
+}
+
+.offer-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 12, 24, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+.offer-modal__panel {
+  position: relative;
+  z-index: 1;
+  width: min(1100px, 70vw);
+  max-height: 85vh;
+  overflow: auto;
+  padding: 28px 32px 32px;
+  font-family: var(--font-dialog);
+  color: #e8f4ff;
+  background: rgba(6, 28, 58, 0.92);
+  border: 3px solid rgba(94, 231, 255, 0.35);
+  box-shadow:
+    inset 0 0 32px rgba(56, 189, 248, 0.08),
+    0 8px 40px rgba(0, 0, 0, 0.5),
+    0 0 24px rgba(14, 165, 233, 0.15);
+  backdrop-filter: blur(8px);
+}
+
+#offer-title {
+  margin: 0 0 20px;
+  font-family: var(--font-dialog);
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--neon);
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+}
+
+.offer-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1;
+  color: rgba(159, 246, 255, 0.7);
+  background: transparent;
+  border: 1px solid rgba(94, 231, 255, 0.3);
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background 0.2s;
+}
+
+.offer-modal__close:hover {
+  color: #fff;
+  border-color: var(--neon);
+  background: rgba(94, 231, 255, 0.1);
+}
+
+.offer-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.offer-form__left {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Поля */
+.offer-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.offer-field__label {
+  font-size: 22px;
+  color: var(--neon);
+}
+
+.offer-field__label strong {
+  font-size: 28px;
+  color: #fff;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+}
+
+/* Range */
+.offer-field--salary input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  margin: 8px 0;
+  background: rgba(94, 231, 255, 0.15);
+  border-radius: 4px;
+  outline: none;
+}
+
+.offer-field--salary input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--neon);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+  cursor: pointer;
+}
+
+.offer-field--salary input[type='range']::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: var(--neon);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+  cursor: pointer;
+}
+
+/* Radio как pill-кнопки */
+.offer-fieldset {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.offer-fieldset legend {
+  margin-bottom: 12px;
+  font-size: 22px;
+  color: var(--neon);
+}
+
+.offer-fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.offer-radio {
+  position: relative;
+  cursor: pointer;
+}
+
+.offer-radio input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.offer-radio span {
+  display: block;
+  padding: 8px 16px;
+  font-size: 20px;
+  color: rgba(159, 246, 255, 0.65);
+  border: 2px solid rgba(94, 231, 255, 0.25);
+  background: rgba(6, 28, 58, 0.6);
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+}
+
+.offer-radio input:checked + span {
+  color: #fff;
+  border-color: var(--neon);
+  background: rgba(56, 189, 248, 0.15);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+}
+
+.offer-radio:hover span {
+  border-color: rgba(94, 231, 255, 0.5);
+  color: var(--neon);
+}
+
+/* Text input */
+.offer-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-family: var(--font-dialog);
+  font-size: 22px;
+  color: #e8f4ff;
+  background: rgba(4, 16, 32, 0.8);
+  border: 2px solid rgba(94, 231, 255, 0.3);
+  outline: none;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.offer-input::placeholder {
+  color: rgba(159, 246, 255, 0.35);
+}
+
+.offer-input:focus {
+  border-color: var(--neon);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+}
+
+/* Submit */
+.offer-form__submit {
+  align-self: flex-start;
+  margin-top: 8px;
+  font-family: var(--font-dialog);
+  font-size: 24px;
+  padding: 10px 24px;
+  color: var(--neon);
+  background: rgba(6, 28, 58, 0.85);
+  border: 2px solid rgba(94, 231, 255, 0.45);
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    background 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.offer-form__submit:hover {
+  color: #fff;
+  border-color: var(--neon);
+  background: rgba(14, 60, 100, 0.9);
+  box-shadow:
+    0 0 12px rgba(56, 189, 248, 0.45),
+    inset 0 0 10px rgba(125, 249, 255, 0.12);
+}
+
+.offer-form__status {
+  margin: 0;
+  font-size: 20px;
+  color: var(--neon);
+}
+
+.offer-form__status[hidden] {
+  display: none !important;
+}
+
+/* Спрайт справа */
+.offer-form__right {
+  display: flex;
+  flex-direction: column;
+}
+
+.offer-sprite-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1280 / 1440;
+  border: 2px solid rgba(94, 231, 255, 0.2);
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 0 24px rgba(56, 189, 248, 0.06);
+}
+
+.offer-sprite {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.offer-sprite.is-active {
+  opacity: 1;
+}
+
+.offer-sprite__caption {
+  margin: 16px 0 0;
+  text-align: center;
+  font-family: var(--font-dialog);
+  font-size: 22px;
+  line-height: 1.35;
+  color: var(--neon);
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+  min-height: 2.7em;
+}
+
+.stage.is-offer {
+  filter: brightness(0.45);
+}
+
+/* Узкий экран */
+@media (max-width: 768px) {
+  .offer-modal__panel {
+    width: 95vw;
+    padding: 20px;
+  }
+
+  .offer-form {
+    grid-template-columns: 1fr;
+  }
 }

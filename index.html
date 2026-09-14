@@ -5,17 +5,226 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My CV</title>
     <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Neucha&family=Shantell+Sans:ital,wght@0,300..800&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <script type="module" src="js/main.js"></script>
     <div class="viewport">
+      <!-- <div class="intro" aria-hidden="false"></div> -->
       <div class="stage">
+        <div class="layer layer--menu">
+          <img
+            class="menu-layer menu-layer--bar"
+            src="assets/menu/bar.png"
+            alt=""
+          />
+          <img
+            class="menu-layer"
+            data-reward="github"
+            hidden
+            src="assets/menu/git.png"
+            alt=""
+          />
+          <img
+            class="menu-layer"
+            data-reward="hh"
+            hidden
+            src="assets/menu/hh.png"
+            alt=""
+          />
+          <img
+            class="menu-layer"
+            data-reward="telegram"
+            hidden
+            src="assets/menu/tlg.png"
+            alt=""
+          />
+          <img
+            class="menu-layer menu-layer--vol"
+            src="assets/menu/vol-.png"
+            alt=""
+          />
+          <!-- hit-areas для кликов -->
+          <a
+            class="menu-hit"
+            data-reward="github"
+            hidden
+            href="https://github.com/coffee22coder"
+            target="_blank"
+          ></a>
+          <a
+            class="menu-hit"
+            data-reward="hh"
+            hidden
+            href="https://hh.ru/resume/6bc4ac4cff10d59ec80039ed1f6555396b5a59"
+            target="_blank"
+          ></a>
+          <a
+            class="menu-hit"
+            data-reward="telegram"
+            hidden
+            href="https://t.me/ermakov_jenya"
+            target="_blank"
+          ></a>
+          <button
+            class="menu-hit menu-hit--sound"
+            type="button"
+            aria-pressed="false"
+          ></button>
+        </div>
+        <div class="dialog-panel" hidden>
+          <p class="dialog-panel__text"></p>
+          <div class="dialog-panel__actions"></div>
+        </div>
         <img class="layer layer--room" src="assets/quest/room.png" alt="" />
-        <div class="layer layer--artifacts"></div>
+        <div class="layer layer--artifacts">
+          <img
+            class="artifact-visual artifact-visual--cat"
+            src="assets/quest/artifacts/cat.png"
+            alt=""
+          />
+          <img
+            class="artifact-visual artifact-visual--phone"
+            src="assets/quest/artifacts/phone.png"
+            alt=""
+          />
+          <img
+            class="artifact-visual artifact-visual--cv"
+            src="assets/quest/artifacts/cv.png"
+            alt=""
+          />
+
+          <button
+            class="artifact-hit artifact-hit--cat"
+            type="button"
+            data-id="cat"
+            aria-label="Cat"
+          ></button>
+          <button
+            class="artifact-hit artifact-hit--phone"
+            type="button"
+            data-id="phone"
+            aria-label="Phone"
+          ></button>
+          <button
+            class="artifact-hit artifact-hit--cv"
+            type="button"
+            data-id="cv"
+            aria-label="CV"
+          ></button>
+        </div>
         <div class="layer--flashlight"></div>
-        <img class="layer layer--hero" src="assets/quest/hero.png" alt="" />
+        <img
+          class="hero-frame is-active"
+          src="assets/quest/hero/hero_1.png"
+          alt=""
+        />
+        <img class="hero-frame" src="assets/quest/hero/hero_2.png" alt="" />
+        <img class="hero-frame" src="assets/quest/hero/hero_3.png" alt="" />
+        <img class="hero-frame" src="assets/quest/hero/hero_fin.png" alt="" />
+      </div>
+      <button class="finale-cta dialog-panel__btn" type="button" hidden>
+        Поздравляю!
+      </button>
+      <div class="offer-modal" hidden>
+        <div class="offer-modal__backdrop" data-close-offer></div>
+        <div
+          class="offer-modal__panel"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="offer-title"
+        >
+          <h2 id="offer-title">Твой оффер</h2>
+          <form class="offer-form" id="offer-form">
+            <div class="offer-form__left">
+              <label class="offer-field offer-field--salary">
+                <span class="offer-field__label">
+                  Зарплата: <strong id="offer-salary-label">250</strong>k
+                </span>
+                <input
+                  type="range"
+                  name="salary"
+                  id="offer-salary"
+                  min="150"
+                  max="350"
+                  step="50"
+                  value="250"
+                />
+              </label>
+
+              <fieldset class="offer-fieldset">
+                <legend>Формат</legend>
+                <label class="offer-radio">
+                  <input type="radio" name="mode" value="remote" checked />
+                  <span>Удалённо</span>
+                </label>
+                <label class="offer-radio">
+                  <input type="radio" name="mode" value="hybrid" checked />
+                  <span>Гибрид</span>
+                </label>
+                <label class="offer-radio">
+                  <input type="radio" name="mode" value="office" checked />
+                  <span>Офис</span>
+                </label>
+              </fieldset>
+
+              <label class="offer-field">
+                <span class="offer-field__label">Контакт для связи</span>
+                <input
+                  class="offer-input"
+                  type="text"
+                  name="contact"
+                  required
+                  placeholder="email / telegram"
+                />
+              </label>
+
+              <button
+                type="submit"
+                class="offer-form__submit dialog-panel__btn"
+              >
+                Отправить оффер
+              </button>
+              <p class="offer-form__status" hidden></p>
+            </div>
+            <div class="offer-form__right">
+              <div class="offer-sprite-box">
+                <img
+                  class="offer-sprite is-active"
+                  data-sprite="sui"
+                  src="assets/form/sui.png"
+                  alt=""
+                />
+                <img
+                  class="offer-sprite"
+                  data-sprite="leb"
+                  src="assets/form/leb.png"
+                  alt=""
+                />
+                <img
+                  class="offer-sprite"
+                  data-sprite="neo"
+                  src="assets/form/neo.png"
+                  alt=""
+                />
+                <img
+                  class="offer-sprite"
+                  data-sprite="term"
+                  src="assets/form/term.png"
+                  alt=""
+                />
+              </div>
+              <p class="offer-sprite__caption"></p>
+            </div>
+          </form>
+          <button type="button" class="offer-modal__close" data-close-offer>
+            ✕
+          </button>
+        </div>
       </div>
     </div>
-    <header class="topbar">…</header>
   </body>
 </html>
