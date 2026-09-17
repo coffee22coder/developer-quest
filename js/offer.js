@@ -13,7 +13,7 @@ const MATRIX = {
 
 const PERSONA = {
   sui: { label: 'Повешенный', caption: 'Такой оффер я не переживу' },
-  leb: { label: 'Лебовски', caption: 'Где деньги, Лебовски?' },
+  leb: { label: 'Лебовски', caption: 'Где оффер, Лебовски?' },
   neo: {
     label: 'Нео',
     caption: 'Матрица — это система, Нео.',
